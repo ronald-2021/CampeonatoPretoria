@@ -201,19 +201,6 @@ function verificarCredenciales() {
         alert('Credenciales incorrectas.');
     }
 }
-    
-    const valido = credenciales.some(c => c.username === usernameInput && c.password === passwordInput);
-    
-    if (valido) {
-        state.authenticated = true;
-        document.getElementById('login-modal').style.display = 'none';
-        document.getElementById('username').value = "";
-        document.getElementById('password').value = "";
-        mostrarPanelAdmin();
-    } else {
-        alert('Credenciales incorrectas.');
-    }
-}
 
 function cerrarSesion() {
     state.authenticated = false;
