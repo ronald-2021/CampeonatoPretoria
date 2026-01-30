@@ -168,16 +168,39 @@ function enviarCredenciales(username, password) {
 function verificarCredenciales() {
     const usernameInput = document.getElementById('username').value;
     const passwordInput = document.getElementById('password').value;
+    
     let credenciales = JSON.parse(localStorage.getItem('pretoria_credentials') || '[]');
     
+    // --- PRIMER USO: Generar y Enviar ---
     if (credenciales.length === 0) {
         const newCreds = generarCredenciales();
         credenciales.push(newCreds);
         localStorage.setItem('pretoria_credentials', JSON.stringify(credenciales));
+        
+        // Enviar al correo
         enviarCredenciales(newCreds.username, newCreds.password);
-        alert(`PRIMER ACCESO: Hemos generado credenciales nuevas.\n\nUSUARIO: ${newCreds.username}\nCLAVE: ${newCreds.password}\n\n(Cópialas ahora).`);
+        
+        // AHORA SOLO DICE ESTO:
+        alert(`✅ SISTEMA INICIALIZADO\n\nLas credenciales de acceso seguro han sido enviadas a:\n${CONFIG.adminEmail}\n\nRevisa tu bandeja de entrada (o Spam) para ingresar.`);
         return;
     }
+    
+    // --- VALIDACIÓN ---
+    const valido = credenciales.some(c => c.username === usernameInput && c.password === passwordInput);
+    
+    if (valido) {
+        state.authenticated = true;
+        document.getElementById('login-modal').style.display = 'none';
+        
+        // Limpiar campos por seguridad
+        document.getElementById('username').value = "";
+        document.getElementById('password').value = "";
+        
+        mostrarPanelAdmin();
+    } else {
+        alert('Credenciales incorrectas.');
+    }
+}
     
     const valido = credenciales.some(c => c.username === usernameInput && c.password === passwordInput);
     
@@ -498,4 +521,5 @@ function cambiarTab(tab) {
 
 window.eliminarEquipo = eliminarEquipo;
 window.eliminarJugador = eliminarJugador;
+
 window.eliminarPartido = eliminarPartido;
